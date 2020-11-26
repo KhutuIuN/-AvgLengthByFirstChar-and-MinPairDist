@@ -6,14 +6,14 @@ import java.util.*;
 public class Main {
     private final String fileName;
     private final int topN;
-    public String[] tokens;
-    Map<String, Double> map = new HashMap<>();
+    private String[] tokens;
+    private Map<String, Double> map = new HashMap<>(); // A map to hold pairs with their factors.
 
     public Main(String fileName, int topN) throws IOException {
-        //Complete this constructor
         this.fileName = fileName;
         this.topN = topN;
 
+        /** Tokenize operation **/
         File file = new File(getFileName());
         BufferedReader br = new BufferedReader(new FileReader(file));
 
@@ -82,8 +82,6 @@ public class Main {
         //Fill this function
 
 
-        // A map to hold pairs with their factors.
-
         Set pairs = new HashSet();
         double distance;
 
@@ -98,7 +96,7 @@ public class Main {
             }
         }
 
-        /** This part exist for adding pairs in the set according to the topN number. **/
+        /** This part exists for adding pairs in the set according to the topN number.(topN biggest pair) **/
         ArrayList<Double> sortedMap = new ArrayList<>(map.values());
         Collections.sort(sortedMap);
         Collections.reverse(sortedMap);
@@ -108,38 +106,35 @@ public class Main {
             for (Map.Entry<String, Double> iterator : map.entrySet()) {
                 if (iterator.getValue().equals(sortedMap.get(counter))) {
                     pairs.add(iterator.getKey());
-                    counter++;
+                    if (pairs.contains(iterator.getKey()))
+                        counter++;
                 }
             }
 
         return pairs;
     }
 
-    /** Sets are unordered so to print the set with decreasing order, use printSet method. **/
+    /**
+     * Sets are unordered so to print the set with decreasing order, use printSet method.
+     **/
     public void printSet(Set set) {
 
         ArrayList<String> arListOfSet = new ArrayList<>(set); //Copy of the Set as ArrayList.
 
-        ArrayList<String> indexes = new ArrayList<>(); //To keep indexes to know which pair to print.
+        ArrayList<Double> values = new ArrayList<>(map.values()); //To keep values to know which pair to print.
 
+        Collections.sort(values);
+        Collections.reverse(values);
 
-        for (int i = 0; i < getTopN(); i++) {
-            String temp = (arListOfSet.get(i));
-            String[] split = temp.split("="); //
-            indexes.add(split[3]);
-        }
-
-        Collections.sort(indexes);
-        Collections.reverse(indexes);
-
-        for (int i = 0; i < getTopN(); i++) {
-            for (int j = 0; j < getTopN(); j++) {
-                String temp = arListOfSet.get(j);
-                if (temp.contains(indexes.get(i))) {
-                    System.out.println(arListOfSet.get(j));
-                    arListOfSet.remove(arListOfSet.get(j));
-                    arListOfSet.add(j, "-1");
+        int counter = 0; // to keep track of how many pair is printed
+        for (int i = 0; i < arListOfSet.size(); i++) {
+            for (String s : arListOfSet) {
+                if (s.contains(values.get(i).toString())) {
+                    System.out.println(s);
+                    counter++;
                 }
+                if (counter == getTopN())
+                    break;
             }
         }
     }
@@ -149,6 +144,7 @@ public class Main {
         double numOfToken1 = 0;
         double numOfToken2 = 0;
 
+        /** To find how many time token1 and token2 are occured in the text **/
         for (String token : tokens) {
             {
                 if (token.equals(token1))
@@ -158,6 +154,7 @@ public class Main {
             }
         }
 
+        /** To fin the distance between token1 and token2 **/
         double sum = 0;
         for (int i = 1; i < tokens.length; i++) {
             if (!tokens[i].equals(token1))
@@ -171,6 +168,7 @@ public class Main {
                 break;
             }
         }
+
         return (numOfToken1 * numOfToken2) / (1 + Math.log(sum));
     }
 
