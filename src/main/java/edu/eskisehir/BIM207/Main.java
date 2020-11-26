@@ -36,6 +36,7 @@ public class Main {
         this.tokens = tokens;
 
         computeAvgLengthByFirstChar();
+        System.out.println();//to seperate two outputs
         Set pairs = calculateMinPairDist();
         printSet(pairs);
     }
@@ -102,14 +103,17 @@ public class Main {
         Collections.reverse(sortedMap);
 
         int counter = 0;
-        while (counter < getTopN())
+        for (int i = 0; i < getTopN(); i++) {
             for (Map.Entry<String, Double> iterator : map.entrySet()) {
-                if (iterator.getValue().equals(sortedMap.get(counter))) {
+                if ((iterator.getValue()).equals(sortedMap.get(i))) {
                     pairs.add(iterator.getKey());
-                    if (pairs.contains(iterator.getKey()))
-                        counter++;
+                    counter++;
                 }
+                if (counter == getTopN())
+                    break;
             }
+
+        }
 
         return pairs;
     }
@@ -119,7 +123,7 @@ public class Main {
      **/
     public void printSet(Set set) {
 
-        ArrayList<String> arListOfSet = new ArrayList<>(set); //Copy of the Set as ArrayList.
+        ArrayList<String> arListOfSet = new ArrayList<String>(set); //Copy of the Set as ArrayList.
 
         ArrayList<Double> values = new ArrayList<>(map.values()); //To keep values to know which pair to print.
 
@@ -133,9 +137,10 @@ public class Main {
                     System.out.println(s);
                     counter++;
                 }
-                if (counter == getTopN())
-                    break;
             }
+            if (counter == getTopN())
+                break;
+
         }
     }
 
